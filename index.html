@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>London-Mission – Englisch üben</title>
+<style>
+:root{--navy:#14213d;--red:#d62828;--sky:#e8f1fb;--sun:#ffc233;--green:#1f9d55;--line:#c9d8ec}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--sky);color:var(--navy);font:18px/1.35 "Trebuchet MS","Avenir Next",system-ui,sans-serif}
+header{background:var(--navy);color:#fff;padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;border-bottom:8px solid var(--red)}
+h1{margin:0;font-size:1.4rem}
+.stat{display:flex;gap:10px;flex-wrap:wrap;font-weight:700}
+.stat span{background:#ffffff22;border-radius:20px;padding:4px 12px}
+nav{display:flex;gap:6px;padding:10px;flex-wrap:wrap;background:#fff;border-bottom:2px solid var(--line)}
+nav button{flex:1 1 110px;min-height:56px;border:3px solid var(--navy);background:#fff;color:var(--navy);border-radius:14px;font:inherit;font-weight:700;cursor:pointer}
+nav button.on{background:var(--navy);color:#fff}
+main{max-width:960px;margin:0 auto;padding:14px}
+section{display:none}section.on{display:block}
+h2{margin:6px 0 4px;font-size:1.5rem}
+.hint{margin:4px 0 12px;color:#44567a}
+.btn{min-height:54px;padding:8px 18px;border:0;border-radius:14px;background:var(--red);color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #8f1b1b}
+.btn.alt{background:var(--navy);box-shadow:0 4px 0 #0a1121}
+.btn.sun{background:var(--sun);color:var(--navy);box-shadow:0 4px 0 #b88a14}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 14px}
+.prog{height:16px;background:#fff;border:2px solid var(--navy);border-radius:10px;overflow:hidden;margin:8px 0 12px}
+.prog i{display:block;height:100%;background:var(--green);transition:width .3s}
+.msg{min-height:2em;font-weight:700;font-size:1.15rem;margin:8px 0}
+.ok{color:var(--green)}.no{color:var(--red)}
+.row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;background:#fff;border-radius:14px;padding:8px 10px;margin-bottom:8px;border:2px solid var(--line)}
+.row .de{font-size:1.2rem}
+.row .en{min-height:52px;border:3px solid #2f6fed;border-radius:12px;background:#eaf1ff;font:inherit;font-weight:700;font-size:1.2rem;color:var(--navy);cursor:pointer;padding:6px}
+.row .en.cov{background:var(--sun);border-color:#b88a14;font-weight:400;font-size:1rem}
+.spk{width:52px;height:52px;border:0;border-radius:50%;background:var(--sun);font-size:1.4rem;cursor:pointer}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols button,.opt{display:block;width:100%;min-height:64px;margin-bottom:10px;border:3px solid var(--navy);border-radius:14px;background:#fff;color:var(--navy);font:inherit;font-weight:700;font-size:1.15rem;padding:8px;cursor:pointer;overflow-wrap:anywhere}
+.cols .l,.cols .r.en{background:#eaf1ff}
+.cols .r{background:#fff2dc}
+.sel{outline:5px solid var(--sun);background:var(--sun)!important}
+.good{background:#c9f0d8!important;border-color:var(--green)!important;color:#0d5c30}
+.bad{background:#ffd5d2!important;border-color:var(--red)!important;animation:sh .3s}
+.tip{outline:5px dashed var(--red)}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{min-height:96px;border:3px solid var(--navy);border-radius:14px;font:inherit;font-weight:700;font-size:1.1rem;padding:6px;cursor:pointer;overflow-wrap:anywhere;hyphens:auto;background:var(--navy);color:#fff}
+.card.up.en{background:#eaf1ff;color:var(--navy);border-color:#2f6fed}
+.card.up.de{background:#fff2dc;color:var(--navy);border-color:var(--sun)}
+.card.done{background:#c9f0d8!important;border-color:var(--green)!important}
+.q{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:18px;text-align:center;font-size:1.7rem;font-weight:700;margin:10px 0 14px;overflow-wrap:anywhere}
+.inp{width:100%;min-height:64px;font:inherit;font-size:1.6rem;padding:8px 14px;border:3px solid var(--navy);border-radius:14px;margin-bottom:12px}
+.end{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:20px;text-align:center}
+.end .big{font-size:2.4rem}
+@media(max-width:560px){.row{grid-template-columns:1fr auto}.row .de{grid-column:1/3}.row .en{grid-column:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><h1>🚌 London-Mission</h1><div class="stat"><span id="rank"></span><span id="stars"></span><span id="known"></span></div></header>
+<nav id="tabs"></nav>
+<main><section id="s0"></section><section id="s1"></section><section id="s2"></section><section id="s3"></section><section id="s4"></section></main>
+<script>
+// ===== Zentrale Vokabeldatenbank: [Englisch, Deutsch, erlaubte Schreibweisen (optional, mit | getrennt)] =====
+const D=[
+["I'm from …","Ich komme aus …","I'm from"],["this","das; dies"],["my","mein, meine"],["bike","Fahrrad"],
+["cool","cool; super"],["fan","Fan"],["eleven","elf"],["How old are you?","Wie alt bist du?"],
+["he's (= he is)","er ist","he's|he is"],["crazy","verrückt"],["England","England"],
+["that's (= that is)","das ist","that's|that is"],["Where are you from?","Woher kommst du?"],
+["pet","Haustier"],["they're (= they are)","sie sind","they're|they are"],["guinea pig","Meerschweinchen"],
+["twelve","zwölf"],["lucky number","Glückszahl"],["cat","Katze"],["photo","Foto"],["Germany","Deutschland"],
+["dad / father","Papa / Vater","dad|father"],["mum / mother","Mama / Mutter","mum|mother"],
+["parents (pl)","Eltern","parents|parents (pl)"],["sister","Schwester"],["brother","Bruder"],
+["aunt","Tante"],["uncle","Onkel"],["cousin","Cousin; Cousine","cousin"],
+["grandmother","Großmutter"],["grandfather","Großvater"]];
+const V=D.map((d,i)=>({id:i,en:d[0],de:d[1],acc:(d[2]||d[0]).split('|'),
+ say:d[0].replace(/\(.*?\)/g,'').replace('…','').replace(/\s*\/\s*/g,', ').trim()}));
+// ===== Hilfsfunktionen =====
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.toLowerCase().replace(/[’`´]/g,"'").replace(/\s+/g,' ').trim().replace(/(…|\.\.\.)$/,'').trim();
+const canSpeak='speechSynthesis' in window;
+function speak(t){if(!canSpeak)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+let stars=0;const known=new Set();
+function win(id){stars++;known.add(id);upd()}
+function upd(){$('#stars').textContent='⭐ '+stars;$('#known').textContent='✅ '+known.size+' von '+V.length+' geübt';
+ $('#rank').textContent='🎒 '+(stars>=50?'Meister':stars>=25?'Profi':stars>=10?'Entdecker':'Neuling')}
+function endScreen(el,score,n,wrong,again,repeat,label){
+ const r=score/n,m=r===1?'Perfekt! Alles richtig! 🏆':r>=.8?'Sehr stark! Fast alles richtig!':r>=.5?'Gut gemacht! Mit etwas Übung wird es noch besser.':'Nicht aufgeben! Üben macht den Meister. Versuch die Wiederholung!';
+ el.innerHTML=`<div class="end"><div class="big">${r===1?'🏆':r>=.5?'⭐':'💪'}</div><h2>${score} von ${n} richtig</h2><p>${m}</p><div class="bar" style="justify-content:center">${wrong.length?`<button class="btn sun" id="rp">🔁 Nur Fehler üben (${wrong.length})</button>`:''}<button class="btn" id="ag">🔄 ${label||'Neue Runde'}</button></div></div>`;
+ el.querySelector('#ag').onclick=again;const b=el.querySelector('#rp');if(b)b.onclick=()=>repeat(wrong)}
+// ===== Übung 1: Vokabelliste =====
+function ex1(el){let order=V.slice(),cov={};
+ function draw(){el.innerHTML=`<h2>1 · Anschauen und Lernen</h2><p class="hint">Tippe auf ein englisches Wort, um es zu verdecken oder aufzudecken.</p><div class="bar"><button class="btn alt" data-a="hide">🙈 Alles abdecken</button><button class="btn alt" data-a="show">👀 Alles aufdecken</button><button class="btn" data-a="mix">🔀 Mischen</button><button class="btn sun" data-a="abc">📖 Wie im Buch</button></div>`+
+ order.map(v=>`<div class="row"><span class="de">${esc(v.de)}</span><button class="en ${cov[v.id]?'cov':''}" data-i="${v.id}">${cov[v.id]?'❓ aufdecken':esc(v.en)}</button>${canSpeak?`<button class="spk" data-s="${v.id}" aria-label="Vorlesen">🔊</button>`:''}</div>`).join('')}
+ el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.s!==undefined){speak(V[d.s].say);return}
+  if(d.i!==undefined){cov[d.i]=!cov[d.i]}
+  else if(d.a==='hide')V.forEach(v=>cov[v.id]=true);
+  else if(d.a==='show')cov={};
+  else if(d.a==='mix')order=sh(V);
+  else if(d.a==='abc')order=V.slice();
+  draw()};
+ draw()}
+// ===== Übung 2: Paare verbinden =====
+function ex2(el){let P,L,R,done,sel,bad,tip,msg;
+ function start(){P=sh(V).slice(0,6);L=sh(P);R=sh(P);done=new Set();sel=null;bad=null;tip=null;msg='Tippe ein Wort an und dann das passende Wort daneben.';draw()}
+ function btn(v,side){const k=side==='l'?v.en:v.de,c=[side,side==='r'?'en':''];
+  if(done.has(v.id))c.push('good');else{if(sel&&sel.s===side&&sel.id===v.id)c.push('sel');if(bad&&bad[side]===v.id)c.push('bad');if(tip===v.id)c.push('tip')}
+  return `<button class="${c.join(' ')}" data-s="${side}" data-i="${v.id}" ${done.has(v.id)?'disabled':''}>${esc(k)}</button>`}
+ function draw(){el.innerHTML=`<h2>2 · Paare verbinden</h2><div class="prog"><i style="width:${done.size/P.length*100}%"></i></div><div class="msg">${msg} (${done.size} von ${P.length})</div><div class="cols"><div>${L.map(v=>btn(v,'l')).join('')}</div><div>${R.map(v=>btn(v,'r')).join('')}</div></div><div class="bar"><button class="btn sun" id="t">💡 Tipp</button><button class="btn" id="n">🔄 Neue Runde</button></div>`;
+  el.querySelector('#n').onclick=start;
+  el.querySelector('#t').onclick=()=>{const v=P.find(x=>!done.has(x.id));if(v){tip=v.id;draw();setTimeout(()=>{tip=null;draw()},2200)}}}
+ el.onclick=e=>{const b=e.target.closest('.cols button');if(!b||b.disabled)return;const s=b.dataset.s,id=+b.dataset.i;
+  if(!sel||sel.s===s){sel={s,id};draw();return}
+  const a=sel;sel=null;
+  if(a.id===id){done.add(id);win(id);msg=done.size===P.length?'🎉 Geschafft! Alle Paare gefunden!':'✅ Richtig!';draw()}
+  else{bad={[a.s]:a.id,[s]:id};msg='❌ Das passt nicht. Versuch es nochmal!';draw();setTimeout(()=>{bad=null;draw()},700)}};
+ start()}
+// ===== Übung 3: Memory =====
+function ex3(el){let cards,open,matched,moves,lock,lvl=4;
+ function start(n){lvl=Math.min(n,V.length);const p=sh(V).slice(0,lvl);cards=sh(p.flatMap(v=>[{id:v.id,t:v.en,l:'en'},{id:v.id,t:v.de,l:'de'}]));open=[];matched=new Set();moves=0;lock=false;draw()}
+ function draw(){const w=matched.size===lvl;
+  el.innerHTML=`<h2>3 · Memory</h2><p class="hint">Finde zu jedem englischen Wort (blau) die deutsche Bedeutung (gelb).</p><div class="bar"><button class="btn alt" data-n="4">Leicht</button><button class="btn alt" data-n="6">Mittel</button><button class="btn alt" data-n="8">Schwer</button><button class="btn" data-n="${lvl}">🔄 Neu mischen</button></div><div class="msg">Paare: ${matched.size} von ${lvl} · Züge: ${moves}${w?' · 🎉 Geschafft!':''}</div><div class="grid">`+
+  cards.map((c,i)=>{const up=open.includes(i)||matched.has(c.id);return `<button class="card ${up?'up '+c.l:''} ${matched.has(c.id)?'done':''}" data-c="${i}">${up?esc(c.t):'❓'}</button>`}).join('')+`</div>`}
+ el.onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.n){start(+b.dataset.n);return}
+  if(lock||b.dataset.c===undefined)return;const i=+b.dataset.c,c=cards[i];
+  if(open.includes(i)||matched.has(c.id))return;
+  open.push(i);
+  if(open.length===2){moves++;const a=cards[open[0]];
+   if(a.id===c.id&&open[0]!==i){matched.add(c.id);win(c.id);open=[]}
+   else{lock=true;draw();setTimeout(()=>{open=[];lock=false;draw()},1200);return}}
+  draw()};
+ start(4)}
+// ===== Übung 4: Welche Vokabel ist richtig? =====
+function ex4(el){let dir,q,i,score,wrong,done;
+ function menu(){el.innerHTML=`<h2>4 · Welche Vokabel ist richtig?</h2><p class="hint">Wähle die Richtung:</p><div class="bar"><button class="btn" data-d="de">🇩🇪 Deutsch ➜ Englisch</button><button class="btn alt" data-d="en">Englisch ➜ Deutsch</button></div>`}
+ function run(pool){q=sh(pool).slice(0,10);i=0;score=0;wrong=[];ask()}
+ const txt=(v,d)=>d==='de'?v.en:v.de;
+ function ask(){if(i>=q.length)return endScreen(el,score,q.length,wrong,menu,p=>run(p),'Andere Richtung / neue Runde');
+  const v=q[i],c=txt(v,dir);done=false;
+  const o=sh([v,...sh(V.filter(x=>x.id!==v.id&&txt(x,dir)!==c)).slice(0,3)]);
+  el.innerHTML=`<h2>4 · Frage ${i+1} von ${q.length}</h2><div class="prog"><i style="width:${i/q.length*100}%"></i></div><div class="q">${esc(dir==='de'?v.de:v.en)}</div>`+o.map(x=>`<button class="opt" data-k="${x.id}">${esc(txt(x,dir))}</button>`).join('')+`<div class="msg" id="m"></div><div id="nx"></div>`;
+  el.onclick=e=>{const b=e.target.closest('.opt');if(!b||done)return;done=true;const ok=+b.dataset.k===v.id;
+   el.querySelectorAll('.opt').forEach(x=>{if(+x.dataset.k===v.id)x.classList.add('good')});
+   if(ok){score++;win(v.id);$('#m').className='msg ok';$('#m').textContent='✅ Richtig! Super!'}
+   else{b.classList.add('bad');wrong.push(v);$('#m').className='msg no';$('#m').textContent='❌ Leider falsch. Richtig ist: '+c}
+   if(dir==='en'||ok)speak(v.say);
+   $('#nx').innerHTML='<button class="btn" id="go">Weiter ➡️</button>';$('#go').onclick=()=>{i++;ask()}}}
+ el.onclick=e=>{const b=e.target.closest('[data-d]');if(b){dir=b.dataset.d;run(V)}};
+ menu()}
+// ===== Übung 5: Selbstständig schreiben =====
+function ex5(el){let q,i,score,wrong,tries,tip;
+ function start(pool){q=sh(pool).slice(0,10);i=0;score=0;wrong=[];ask()}
+ function ask(){if(i>=q.length)return endScreen(el,score,q.length,wrong,()=>start(V),p=>start(p));
+  const v=q[i];tries=0;tip=false;
+  el.innerHTML=`<h2>5 · Wort ${i+1} von ${q.length}</h2><div class="prog"><i style="width:${i/q.length*100}%"></i></div><p class="hint">Wie heißt das auf Englisch?</p><div class="q">${esc(v.de)}</div><input class="inp" id="in" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Schreibe hier …"><div class="bar"><button class="btn" id="ck">✔️ Prüfen</button><button class="btn sun" id="tp">💡 Tipp</button></div><div class="msg" id="m"></div><div id="nx"></div>`;
+  const inp=$('#in'),m=$('#m');inp.focus();
+  function check(){const a=norm(inp.value);if(!a){m.className='msg no';m.textContent='Bitte schreibe zuerst ein Wort.';return}
+   if(v.acc.some(x=>norm(x)===a)){m.className='msg ok';
+    if(tries===0){score++;win(v.id);m.textContent='✅ Richtig geschrieben! Super!'}else m.textContent='👍 Jetzt stimmt es! Gut gemacht.';
+    speak(v.say);$('#ck').disabled=inp.disabled=true;$('#nx').innerHTML='<button class="btn" id="go">Weiter ➡️</button>';$('#go').onclick=()=>{i++;ask()}}
+   else{if(tries===0)wrong.push(v);tries++;m.className='msg no';
+    m.innerHTML='❌ Nicht ganz. Richtig ist: <b>'+esc(v.en)+'</b>';
+    $('#nx').innerHTML='<div class="bar"><button class="btn alt" id="rt">✏️ Nochmal versuchen</button><button class="btn" id="go">Weiter ➡️</button></div>';
+    $('#rt').onclick=()=>{inp.value='';m.textContent='';$('#nx').innerHTML='';inp.focus()};$('#go').onclick=()=>{i++;ask()}}}
+  $('#ck').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check()};
+  $('#tp').onclick=()=>{m.className='msg';m.textContent='💡 Das Wort beginnt mit „'+v.acc[0][0]+'“ und hat '+v.acc[0].length+' Zeichen.'};}
+ el.onclick=null;start(V)}
+// ===== Start =====
+const names=['1 · Lernen','2 · Paare','3 · Memory','4 · Quiz','5 · Schreiben'];
+[ex1,ex2,ex3,ex4,ex5].forEach((f,k)=>{
+ const b=document.createElement('button');b.textContent=names[k];b.onclick=()=>show(k);$('#tabs').appendChild(b);f($('#s'+k))});
+function show(k){document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',j===k));
+ document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('on',j===k))}
+show(0);upd();
+</script></body></html>
